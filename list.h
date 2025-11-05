@@ -14,4 +14,7 @@ typedef struct {
 
 
 void initializeList(List* list);
+void addElement(List* list, int value);
+void removeElement(List* list, int value);
+
 #endif
