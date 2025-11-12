@@ -1,9 +1,9 @@
 #ifndef LISTE_H
 #define LISTE_H
-
+#include <stddef.h>
 
 typedef struct Node {
-    int data;
+    void *data;
     struct Node *next;
 } Node;
 
@@ -12,9 +12,9 @@ typedef struct {
     int size;
 }List;
 
-
 void initializeList(List* list);
-void addElement(List* list, int value);
-void deleteElement(List* list, int value);
+void addElement(List* list, char* value);
+void deleteElement(List* list, char* value);
+
 
 #endif

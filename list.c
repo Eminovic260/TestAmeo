@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
 #include "list.h"
 
 void initializeList(List *list) {
@@ -8,36 +10,43 @@ void initializeList(List *list) {
     list->size = 0;
 }
 
-void addElement (List* list, int value) {
-    if (!list) return;
+void addElement(List *list, char* value) {
+    if (!list || !value) return;
 
-    Node* newNode = (Node*)malloc(sizeof(Node));
+    Node *newNode = (Node *) malloc(sizeof(Node));
     if (!newNode) {
         printf("Problème d'allocation de mémoire");
         return;
     }
-    newNode -> data = value;
-    newNode -> next = list->head;
-    list->head=newNode;
+
+    newNode->data = strdup(value);
+    if (!newNode->data) {
+        free(newNode);
+        printf("Problème d'allocation pour la chaîne\n");
+        return;
+    }
+
+    newNode->next = list->head;
+    list->head = newNode;
     list->size++;
 }
 
-void deleteElement (List* list, int value) {
-    if (!list || !list->head) return;
+void deleteElement(List *list, char* value) {
+    if (!list || !list->head || !value) return;
 
-    Node* current = list->head;
-    Node* previous = NULL;
-    while (current != NULL && current->data != value) {
-        previous = current;
-        current = current->next;
-    }
-if (!current) return;
+    Node *currentNode = list->head;
+    Node *previousNode = NULL;
 
-    if (previous==NULL) {
-        list->head = current->next;
-    } else {
-        previous->next = current->next;
+    while (currentNode != NULL && strcmp(currentNode->data, value) != 0) {
+        previousNode = currentNode;
+        currentNode = currentNode->next;
     }
-    free(current);
+    if (!currentNode) return;
+    if (!previousNode) list->head = currentNode->next;
+    else previousNode->next = currentNode->next;
+
+    free(currentNode->data);
+    free(currentNode);
     list->size--;
 }
+
