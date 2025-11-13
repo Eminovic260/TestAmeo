@@ -27,7 +27,8 @@ void addWordArray(List *list, char **words, int count);
 void freeList(List *list);
 int countElements(List *list);
 WordArray* readElement(Node *node);
-Node* nextElement(Node *node);
+Node* nextElement(Node **current);
+void sortByWordCount(List *list);
 
 
 #endif

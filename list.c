@@ -28,7 +28,6 @@ void addElement(List *list, char* value) {
 
     newNode->next = list->head;
     list->head = newNode;
-    newNode->data = strdup(value);
     newNode->type = TYPE_STRING;
     list->size++;
 }
@@ -89,6 +88,48 @@ int countElements(List *list) {
 WordArray* readElement(Node *node) {
     if (!node) return NULL;
     return (WordArray*) node->data;
+}
+
+Node* nextElement(Node **current) {
+    if (!current || !*current) return NULL;
+    Node *node = *current;
+    *current = (*current)->next;
+    return node;
+}
+
+
+void sortByWordCount(List *list){
+    if (!list || !list->head) return;
+
+    Node *sorted = NULL;
+    Node *current = list->head;
+
+    while (current) {
+        Node *next = current->next;
+
+
+        if (!sorted ||
+            (current->type == TYPE_WORDARRAY && sorted->type == TYPE_STRING) ||
+            (current->type == TYPE_WORDARRAY && sorted->type == TYPE_WORDARRAY &&
+             ((WordArray*)current->data)->count < ((WordArray*)sorted->data)->count)) {
+            current->next = sorted;
+            sorted = current;
+             } else {
+                 Node *s = sorted;
+                 while (s->next &&
+                       (s->next->type == TYPE_STRING ||
+                       (current->type == TYPE_WORDARRAY && s->next->type == TYPE_WORDARRAY &&
+                        ((WordArray*)current->data)->count >= ((WordArray*)s->next->data)->count))) {
+                     s = s->next;
+                        }
+                 current->next = s->next;
+                 s->next = current;
+             }
+
+        current = next;
+    }
+
+    list->head = sorted;
 }
 
 void freeList(List *list) {
